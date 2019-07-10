@@ -1,5 +1,5 @@
 # netty-http-server
-# 采用Netty4.x开发Http Server服务，以此提高性能和吞吐量（处理请求URL路由，多种数据类型参数映射等） #
+# 采用Netty4.x开发Http Server服务，以此提高性能和吞吐量（统一处理请求URL路由，多种数据类型参数映射等） #
 
 ## Prerequisite ##
 1. JDK 1.8+
