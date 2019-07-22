@@ -1,4 +1,0 @@
-logging:
-  level:
-    root: info
-  file: ./logs/netty-http-server.log

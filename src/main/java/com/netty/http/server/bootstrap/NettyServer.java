@@ -1,6 +1,6 @@
 package com.netty.http.server.bootstrap;
 
-import com.netty.http.server.common.utils.SpringContextHolder;
+import com.netty.http.server.router.HttpControllerClass;
 import com.netty.http.server.router.HttpRouter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -17,25 +17,17 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import java.net.InetSocketAddress;
 
 @Log4j2
-@SpringBootConfiguration
-public class NettyServer implements ServletContextListener {
+public class NettyServer {
 
     private static final Integer PORT = 8888;
-    private final SpringContextHolder springContextHolder;
-    private Channel serverChannel;
-    private HttpRouter httpRouter = new HttpRouter();
+    private static HttpRouter httpRouter = new HttpRouter();
 
-    @Autowired
-    public NettyServer(SpringContextHolder springContextHolder) {
-        this.springContextHolder = springContextHolder;
+    static {
+        HttpControllerClass.loadControllerClass().forEach(httpRouter::addRouter);
     }
 
     public void start() {
@@ -43,7 +35,6 @@ public class NettyServer implements ServletContextListener {
         final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             final ServerBootstrap bootstrap = new ServerBootstrap();
-
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
@@ -51,7 +42,6 @@ public class NettyServer implements ServletContextListener {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
-
                             final ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast("httpServerCodec", new HttpServerCodec());
                             pipeline.addLast("httpObjectAggregator", new HttpObjectAggregator(65536));
@@ -61,8 +51,8 @@ public class NettyServer implements ServletContextListener {
                         }
                     });
 
-            serverChannel = bootstrap.bind(new InetSocketAddress(PORT)).sync().channel();
-            log.info("开启{}端口成功", PORT);
+            final Channel serverChannel = bootstrap.bind(new InetSocketAddress(PORT)).sync().channel();
+            log.info("http://127.0.0.1:{}/ Start-up success", PORT);
             serverChannel.closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -71,21 +61,5 @@ public class NettyServer implements ServletContextListener {
             bossGroup.shutdownGracefully();
         }
     }
-
-    public void stop() {
-        if (serverChannel != null) {
-            serverChannel.close();
-        }
-    }
-
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        springContextHolder.loadControllerClass().forEach(httpRouter::addRouter);
-        start();
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        stop();
-    }
 }
+

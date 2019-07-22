@@ -1,7 +1,6 @@
 package com.netty.http.server.order.controller;
 
 import com.netty.http.server.annotation.RequestMapping;
-import com.netty.http.server.annotation.RestController;
 import com.netty.http.server.common.response.GeneralResponse;
 import com.netty.http.server.common.utils.RequestUtils;
 import com.netty.http.server.order.entity.Order;
@@ -10,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Map;
 
-@RestController
+@RequestMapping(uri = "v1/order")
 public class OrderController {
 
-    @RequestMapping(uri = "findAllOrder", method = RequestMethod.GET)
+    @RequestMapping(uri = "findAllOrder")
     public GeneralResponse findAllOrder(FullHttpRequest request) {
         final Map<String, String> parameterMap = RequestUtils.getParameterMap(request);
         return GeneralResponse.success(parameterMap);

@@ -1,7 +1,7 @@
 package com.netty.http.server.bootstrap;
 
-import com.netty.http.server.common.response.GeneralResponse;
 import com.netty.http.server.common.Global;
+import com.netty.http.server.common.response.GeneralResponse;
 import com.netty.http.server.common.utils.ResponseUtils;
 import com.netty.http.server.router.HttpRouter;
 import com.netty.http.server.router.HttpRouterAction;

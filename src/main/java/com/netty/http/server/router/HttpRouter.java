@@ -7,7 +7,6 @@ import com.netty.http.server.common.response.GeneralResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -21,7 +20,7 @@ public class HttpRouter extends ClassLoader {
 
     private Map<HttpRouterLabel, HttpRouterAction<GeneralResponse>> httpRouterMapper = Maps.newConcurrentMap();
 
-    private String classpath = this.getClass().getResource(StringUtils.EMPTY).getPath();
+    private String classpath = this.getClass().getResource(Global.EMPTY).getPath();
 
     private Map<String, Object> controllerBeans = Maps.newConcurrentMap();
 
@@ -31,7 +30,7 @@ public class HttpRouter extends ClassLoader {
         byte[] bytes;
         try (InputStream ins = new FileInputStream(path)) {
             try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-                final byte[] buffer = new byte[1024 * 5];
+                final byte[] buffer = new byte[1024 * 8];
                 int b;
                 while ((b = ins.read(buffer)) != -1) {
                     out.write(buffer, 0, b);
@@ -47,15 +46,21 @@ public class HttpRouter extends ClassLoader {
     public void addRouter(final String controllerClass) {
         try {
             final Class<?> clazz = super.loadClass(controllerClass);
+            final RequestMapping classRequestMapping = clazz.getAnnotation(RequestMapping.class);
+            String clazzUri = Global.EMPTY;
+            if (classRequestMapping != null) {
+                final String uri = classRequestMapping.uri();
+                clazzUri = uri.startsWith(Global.SLASH) ? uri : Global.SLASH + uri;
+            }
             final Method[] methods = clazz.getDeclaredMethods();
             for (Method invokeMethod : methods) {
                 final Annotation[] annotations = invokeMethod.getAnnotations();
                 for (Annotation annotation : annotations) {
                     final Class<? extends Annotation> annotationType = annotation.annotationType();
                     if (annotationType == RequestMapping.class) {
-                        final RequestMapping requestMapping = (RequestMapping) annotation;
-                        final String uri = requestMapping.uri();
-                        final String httpMethod = requestMapping.method().toString().toUpperCase();
+                        final RequestMapping methodRequestMapping = (RequestMapping) annotation;
+                        final String methodUri = methodRequestMapping.uri();
+                        final String httpMethod = methodRequestMapping.method().toString();
                         if (!controllerBeans.containsKey(clazz.getName())) {
                             controllerBeans.put(clazz.getName(), clazz.newInstance());
                         }
@@ -64,10 +69,14 @@ public class HttpRouter extends ClassLoader {
                         if (params.length == 1 && params[0] == FullHttpRequest.class) {
                             httpRouterAction.setInjectionFullHttpRequest(true);
                         }
-                        httpRouterMapper.put(new HttpRouterLabel(uri.startsWith(Global.SLASH) ? uri : Global.SLASH + uri, new HttpMethod(httpMethod)), httpRouterAction);
+                        final String requestUri = clazzUri + (methodUri.startsWith(Global.SLASH) ? methodUri : Global.SLASH + methodUri);
+                        httpRouterMapper.put(new HttpRouterLabel(requestUri, new HttpMethod(httpMethod)), httpRouterAction);
                     }
                 }
             }
+            System.out.println();
+            httpRouterMapper.entrySet().forEach(System.out::println);
+            System.out.println();
         } catch (Exception e) {
             log.error("{}", e);
         }
