@@ -11,17 +11,22 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
 @Lazy(value = false)
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {
 
-    private List<String> controllerClass;
+    private List<Class<?>> controllerClass;
     private ApplicationContext applicationContext;
 
     public <T> T getBean(Class<T> requiredType) {
         return applicationContext.getBean(requiredType);
+    }
+
+    public <T> T getBean(String name) {
+        return (T) applicationContext.getBean(name);
     }
 
     public ApplicationContext getApplicationContext() {
@@ -39,16 +44,16 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
         applicationContext = null;
     }
 
-    private List<String> loadControllerClass(ApplicationContext ctx) {
+    private List<Class<?>> loadControllerClass(ApplicationContext ctx) {
         final Class<? extends Annotation> clazz = RestController.class;
         return ctx.getBeansWithAnnotation(clazz)
                 .values().stream()
                 .map(AopUtils::getTargetClass)
-                .map(Class::getName)
+                .filter(cls -> Objects.nonNull(cls.getAnnotation(clazz)))
                 .collect(Collectors.toList());
     }
 
-    public List<String> loadControllerClass() {
+    public List<Class<?>> loadControllerClass() {
         return controllerClass;
     }
 }

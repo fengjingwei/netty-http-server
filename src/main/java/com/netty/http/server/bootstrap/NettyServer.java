@@ -1,6 +1,6 @@
 package com.netty.http.server.bootstrap;
 
-import com.netty.http.server.router.HttpControllerClass;
+import com.netty.http.server.common.utils.SpringContextHolder;
 import com.netty.http.server.router.HttpRouter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -17,23 +17,25 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.ServletContextListener;
 import java.net.InetSocketAddress;
 
 @Log4j2
-public class NettyServer {
+public class NettyServer implements ServletContextListener {
 
     private static final Integer PORT = 8888;
     private static HttpRouter httpRouter = new HttpRouter();
 
-    static {
-        HttpControllerClass.loadControllerClass().forEach(httpRouter::addRouter);
-    }
+    @Autowired
+    private SpringContextHolder springContextHolder;
 
     public void start() {
         final NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
+            springContextHolder.loadControllerClass().forEach(httpRouter::addRouter);
             final ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)

@@ -43,9 +43,8 @@ public class HttpRouter extends ClassLoader {
         return super.defineClass(name, bytes, 0, bytes.length);
     }
 
-    public void addRouter(final String controllerClass) {
+    public void addRouter(final Class<?> clazz) {
         try {
-            final Class<?> clazz = super.loadClass(controllerClass);
             final RequestMapping classRequestMapping = clazz.getAnnotation(RequestMapping.class);
             String clazzUri = Global.EMPTY;
             if (classRequestMapping != null) {
@@ -74,9 +73,7 @@ public class HttpRouter extends ClassLoader {
                     }
                 }
             }
-            System.out.println();
             httpRouterMapper.entrySet().forEach(System.out::println);
-            System.out.println();
         } catch (Exception e) {
             log.error("{}", e);
         }

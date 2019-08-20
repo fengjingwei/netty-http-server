@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-public class NettyHttpServerTests {
+public class NettyHttpServerApplicationTests {
 
     @Test
     public void contextLoads() {

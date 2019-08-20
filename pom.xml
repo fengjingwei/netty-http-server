@@ -33,6 +33,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
@@ -43,6 +49,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.48</version>
         </dependency>
 
         <dependency>
@@ -84,7 +96,7 @@
                 <configuration>
                     <executable>true</executable>
                     <fork>true</fork>
-                    <mainClass>com.netty.http.server.NettyHttpServer</mainClass>
+                    <mainClass>com.netty.http.server.NettyHttpServerApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

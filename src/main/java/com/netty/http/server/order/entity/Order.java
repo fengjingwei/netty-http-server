@@ -11,9 +11,33 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Order {
 
+    /**
+     * 订单编号
+     */
     private String orderNo;
 
-    private Integer amount;
+    /**
+     * 订单状态
+     */
+    private Integer status;
 
-    private BigDecimal totalBalance;
+    /**
+     * 商品id
+     */
+    private String productId;
+
+    /**
+     * 付款金额
+     */
+    private BigDecimal totalAmount;
+
+    /**
+     * 购买数量
+     */
+    private Integer count;
+
+    /**
+     * 购买人
+     */
+    private String userId;
 }
