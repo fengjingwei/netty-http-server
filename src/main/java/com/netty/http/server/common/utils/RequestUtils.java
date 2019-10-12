@@ -13,13 +13,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
 
-public class RequestUtils {
+public interface RequestUtils {
 
-    private RequestUtils() {
-
-    }
-
-    public static Map<String, String> getParameterMap(final FullHttpRequest request) {
+    static Map<String, String> getParameterMap(final FullHttpRequest request) {
         final HttpMethod method = request.method();
         if (method == HttpMethod.GET) {
             final String uri = request.uri();
@@ -38,7 +34,7 @@ public class RequestUtils {
         return Maps.newHashMap();
     }
 
-    public static <T> T getEntity(final FullHttpRequest request, final Class<T> clazz) {
+    static <T> T postEntity(final FullHttpRequest request, final Class<T> clazz) {
         final ByteBuf jsonBuf = request.content();
         final String json = jsonBuf.toString(CharsetUtil.UTF_8);
         return JsonUtils.fromJson(json, clazz);

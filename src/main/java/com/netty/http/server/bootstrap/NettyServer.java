@@ -25,7 +25,7 @@ import java.net.InetSocketAddress;
 @Log4j2
 public class NettyServer implements ServletContextListener {
 
-    private static final Integer PORT = 8888;
+    private static final Integer PORT = 9999;
     private static HttpRouter httpRouter = new HttpRouter();
 
     @Autowired

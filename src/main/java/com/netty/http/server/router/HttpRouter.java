@@ -63,7 +63,7 @@ public class HttpRouter extends ClassLoader {
                         if (!controllerBeans.containsKey(clazz.getName())) {
                             controllerBeans.put(clazz.getName(), clazz.newInstance());
                         }
-                        final HttpRouterAction httpRouterAction = new HttpRouterAction(controllerBeans.get(clazz.getName()), invokeMethod);
+                        final HttpRouterAction<GeneralResponse> httpRouterAction = new HttpRouterAction<>(controllerBeans.get(clazz.getName()), invokeMethod);
                         final Class[] params = invokeMethod.getParameterTypes();
                         if (params.length == 1 && params[0] == FullHttpRequest.class) {
                             httpRouterAction.setInjectionFullHttpRequest(true);
@@ -73,13 +73,16 @@ public class HttpRouter extends ClassLoader {
                     }
                 }
             }
-            httpRouterMapper.entrySet().forEach(System.out::println);
+
+            if (log.isDebugEnabled()) {
+                httpRouterMapper.forEach((key, value) -> log.info("加载控制层 ==> [{}], 请求路径 ==> [{}], 请求方法 ==> [{}]", value.getObject(), key.getUri(), key.getMethod()));
+            }
         } catch (Exception e) {
             log.error("{}", e);
         }
     }
 
-    public HttpRouterAction getRoute(final HttpRouterLabel httpRouterLabel) {
+    public HttpRouterAction<GeneralResponse> getRoute(final HttpRouterLabel httpRouterLabel) {
         return httpRouterMapper.get(httpRouterLabel);
     }
 }

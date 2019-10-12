@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 @Lazy(value = false)
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {
 
+    private static ApplicationContext applicationContext;
     private List<Class<?>> controllerClass;
-    private ApplicationContext applicationContext;
 
-    public <T> T getBean(Class<T> requiredType) {
+    public static <T> T getBean(Class<T> requiredType) {
         return applicationContext.getBean(requiredType);
     }
 
-    public <T> T getBean(String name) {
-        return (T) applicationContext.getBean(name);
+    public static Object getBean(String name) {
+        return applicationContext.getBean(name);
     }
 
     public ApplicationContext getApplicationContext() {
@@ -35,13 +35,13 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        SpringContextHolder.applicationContext = applicationContext;
         this.controllerClass = loadControllerClass(applicationContext);
     }
 
     @Override
     public void destroy() {
-        applicationContext = null;
+        SpringContextHolder.applicationContext = null;
     }
 
     private List<Class<?>> loadControllerClass(ApplicationContext ctx) {
