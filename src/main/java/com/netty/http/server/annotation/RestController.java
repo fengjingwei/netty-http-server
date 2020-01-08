@@ -6,6 +6,7 @@ import java.lang.annotation.*;
 
 @Target(value = ElementType.TYPE)
 @Retention(value = RetentionPolicy.RUNTIME)
+@Inherited
 @Documented
 @Component
 public @interface RestController {
