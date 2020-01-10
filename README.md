@@ -12,8 +12,8 @@
 > 
 > cd netty-http-server
 > 
-> mvn -DskipTests clean install -U
+> mvn clean install -DskipTests -U
 
 ## Support ##
 - 如有任何问题欢迎微我
-- ![](https://github.com/fengjingwei/Docs/raw/master/wechat.jpg)
+- ![](https://raw.githubusercontent.com/fengjingwei/netty-http-server/master/doc/wechat.jpg)
