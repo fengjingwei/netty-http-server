@@ -42,6 +42,7 @@ public class NettyServer implements ServletContextListener {
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .option(ChannelOption.SO_REUSEADDR, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
+
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             final ChannelPipeline pipeline = ch.pipeline();

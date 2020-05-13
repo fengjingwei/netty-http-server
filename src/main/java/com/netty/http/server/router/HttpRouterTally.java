@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HttpRouterLabel {
+public class HttpRouterTally {
 
     private String uri;
 

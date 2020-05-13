@@ -6,9 +6,9 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 
-public class ResponseUtils {
+public class ResponseUtil {
 
-    private ResponseUtils() {
+    private ResponseUtil() {
 
     }
 
@@ -17,12 +17,12 @@ public class ResponseUtils {
     }
 
     public static void response(ChannelHandlerContext ctx, FullHttpRequest request, GeneralResponse generalResponse) {
-        final boolean keepAlive = HttpUtil.isKeepAlive(request);
-        final byte[] jsonByteByte = JsonUtils.toJson(generalResponse).getBytes();
-        final FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, generalResponse.getResponseStatus(), Unpooled.wrappedBuffer(jsonByteByte));
+        final byte[] jsonBytes = JsonUtil.toJson(generalResponse).getBytes();
+        final FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonBytes));
         final HttpHeaders headers = response.headers();
         headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
         headers.setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+        final boolean keepAlive = HttpUtil.isKeepAlive(request);
         if (!keepAlive) {
             ctx.write(response).addListener(ChannelFutureListener.CLOSE);
         } else {

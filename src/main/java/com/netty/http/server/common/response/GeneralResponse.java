@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GeneralResponse<T> {
 
-    public static final transient GeneralResponse NOT_FOUND = new GeneralResponse(HttpResponseStatus.NOT_FOUND, HttpResponseStatus.NOT_FOUND.reasonPhrase(), null);
+    public static final transient GeneralResponse NOT_FOUND = new GeneralResponse<>(HttpResponseStatus.NOT_FOUND, HttpResponseStatus.NOT_FOUND.reasonPhrase(), null);
 
-    private transient HttpResponseStatus responseStatus = HttpResponseStatus.OK;
+    private static final transient HttpResponseStatus OK = HttpResponseStatus.OK;
+
+    private static final transient HttpResponseStatus SERVER_ERROR = HttpResponseStatus.INTERNAL_SERVER_ERROR;
 
     private int status;
 
@@ -18,7 +20,7 @@ public class GeneralResponse<T> {
 
     private T data;
 
-    private GeneralResponse(final T data) {
+    private GeneralResponse(final HttpResponseStatus responseStatus, final T data) {
         this.status = responseStatus.code();
         this.data = data;
     }
@@ -30,10 +32,14 @@ public class GeneralResponse<T> {
     }
 
     public static <T> GeneralResponse<T> success(final T data) {
-        return new GeneralResponse(data);
+        return new GeneralResponse<>(OK, data);
     }
 
     public static GeneralResponse success() {
         return success(null);
+    }
+
+    public static <T> GeneralResponse<T> error(final String message) {
+        return new GeneralResponse<>(SERVER_ERROR, message, null);
     }
 }
