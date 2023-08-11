@@ -18,9 +18,9 @@ import java.util.Map;
 public class HttpRouter extends ClassLoader {
 
     private static final int BUFFER_SIZE = 1024 * 8;
-    private Map<HttpRouterTally, HttpRouterDispatch<GeneralResponse>> httpRouterMapper = Maps.newConcurrentMap();
-    private String classpath = this.getClass().getResource(Constant.EMPTY).getPath();
-    private Map<String, Object> controllerBeans = Maps.newConcurrentMap();
+    private final Map<HttpRouterTally, HttpRouterDispatch<GeneralResponse<Object>>> httpRouterMapper = Maps.newConcurrentMap();
+    private final String classpath = this.getClass().getResource(Constant.EMPTY).getPath();
+    private final Map<String, Object> controllerBeans = Maps.newConcurrentMap();
 
     @Override
     protected Class<?> findClass(final String name) throws ClassNotFoundException {
@@ -61,7 +61,7 @@ public class HttpRouter extends ClassLoader {
                         if (!controllerBeans.containsKey(clazz.getName())) {
                             controllerBeans.put(clazz.getName(), clazz.newInstance());
                         }
-                        final HttpRouterDispatch<GeneralResponse> httpRouterDispatch = new HttpRouterDispatch<>(controllerBeans.get(clazz.getName()), invokeMethod);
+                        final HttpRouterDispatch<GeneralResponse<Object>> httpRouterDispatch = new HttpRouterDispatch<>(controllerBeans.get(clazz.getName()), invokeMethod);
                         final String requestUri = clazzUri + (methodUri.startsWith(Constant.SLASH) ? methodUri : Constant.SLASH + methodUri);
                         httpRouterMapper.put(new HttpRouterTally(requestUri, HttpMethod.valueOf(httpMethod)), httpRouterDispatch);
                     }
@@ -72,11 +72,11 @@ public class HttpRouter extends ClassLoader {
                 httpRouterMapper.forEach((key, value) -> log.info("加载控制层 ==> [{}], 请求路径 ==> [{}], 请求方法 ==> [{}]", value.getObject(), key.getUri(), key.getMethod()));
             }
         } catch (Exception e) {
-            log.error("{}", e);
+            log.error(e);
         }
     }
 
-    public HttpRouterDispatch<GeneralResponse> getRoute(final HttpRouterTally httpRouterTally) {
+    public HttpRouterDispatch<GeneralResponse<Object>> getRoute(final HttpRouterTally httpRouterTally) {
         return httpRouterMapper.get(httpRouterTally);
     }
 }

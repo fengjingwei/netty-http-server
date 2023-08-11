@@ -26,7 +26,7 @@ import java.net.InetSocketAddress;
 public class NettyServer implements ServletContextListener {
 
     private static final Integer PORT = 9999;
-    private static HttpRouter httpRouter = new HttpRouter();
+    private static final HttpRouter httpRouter = new HttpRouter();
 
     @Autowired
     private SpringContextHolder springContextHolder;

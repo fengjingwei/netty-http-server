@@ -16,7 +16,7 @@ public class ResponseUtil {
         response(ctx, request, GeneralResponse.NOT_FOUND);
     }
 
-    public static void response(ChannelHandlerContext ctx, FullHttpRequest request, GeneralResponse generalResponse) {
+    public static void response(ChannelHandlerContext ctx, FullHttpRequest request, GeneralResponse<Object> generalResponse) {
         final byte[] jsonBytes = JsonUtil.toJson(generalResponse).getBytes();
         final FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonBytes));
         final HttpHeaders headers = response.headers();

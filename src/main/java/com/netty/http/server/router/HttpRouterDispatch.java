@@ -16,10 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @RequiredArgsConstructor
@@ -36,7 +33,7 @@ public class HttpRouterDispatch<T> {
 
     private static void verifyParameterAnnotations(Map<String, List<String>> parameterMap, Method method) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        if (parameterAnnotations == null || parameterAnnotations.length == 0) {
+        if (parameterAnnotations.length == 0) {
             return;
         }
         for (Annotation[] parameterAnnotation : parameterAnnotations) {
@@ -136,9 +133,8 @@ public class HttpRouterDispatch<T> {
         try {
             return (T) method.invoke(object, handleRequest(request));
         } catch (Exception e) {
-            String message = e.getMessage();
-            log.error("Reasons for failure: {}", message);
-            return (T) GeneralResponse.error(message);
+            log.error("Reasons for failure", e);
+            return (T) GeneralResponse.error(e.getMessage());
         }
     }
 

@@ -12,7 +12,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
-    private HttpRouter httpRouter;
+    private final HttpRouter httpRouter;
 
     NettyServerHandler(HttpRouter httpRouter) {
         this.httpRouter = httpRouter;
@@ -49,7 +49,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             if (uri.contains(Constant.QUESTION)) {
                 uri = uri.substring(0, uri.indexOf(Constant.QUESTION));
             }
-            final HttpRouterDispatch<GeneralResponse> httpRouterDispatch = httpRouter.getRoute(new HttpRouterTally(uri, request.method()));
+            final HttpRouterDispatch<GeneralResponse<Object>> httpRouterDispatch = httpRouter.getRoute(new HttpRouterTally(uri, request.method()));
             if (httpRouterDispatch != null) {
                 ResponseUtil.response(ctx, request, httpRouterDispatch.call(request));
             } else {

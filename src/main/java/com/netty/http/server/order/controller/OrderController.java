@@ -22,9 +22,9 @@ public class OrderController {
 
     private static List<Order> buildOrderList() {
         List<Order> data = Lists.newArrayList();
-        data.add(new Order("1", 1, "1", new BigDecimal(99.98), 1, "1"));
-        data.add(new Order("2", 2, "2", new BigDecimal(199.99), 2, "1"));
-        data.add(new Order("3", 1, "1", new BigDecimal(99.88), 1, "2"));
+        data.add(new Order("1", 1, "1", new BigDecimal("99.98"), 1, "1"));
+        data.add(new Order("2", 2, "2", new BigDecimal("199.99"), 2, "1"));
+        data.add(new Order("3", 1, "1", new BigDecimal("99.88"), 1, "2"));
         return data;
     }
 
