@@ -35,7 +35,7 @@ public class OrderController {
 
     @RequestMapping(uri = "findByCondition")
     public GeneralResponse<List<Order>> findByCondition(@RequestParam(name = "orderNo") String orderNo,
-                                                        @RequestParam(name = "status", required = false) int status,
+                                                        @RequestParam(name = "status", required = false) Byte status,
                                                         @RequestParam(name = "userIds") String[] userIds) {
         List<Order> data = Lists.newArrayList();
         buildOrderList().stream()

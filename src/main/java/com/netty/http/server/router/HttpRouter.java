@@ -69,7 +69,7 @@ public class HttpRouter extends ClassLoader {
             }
 
             if (log.isDebugEnabled()) {
-                httpRouterMapper.forEach((key, value) -> log.info("加载控制层 ==> [{}], 请求路径 ==> [{}], 请求方法 ==> [{}]", value.getObject(), key.getUri(), key.getMethod()));
+                httpRouterMapper.forEach((key, value) -> log.info("加载控制层 => [{}], 请求路径 => [{}], 请求方法 => [{}]", value.getObject(), key.getUri(), key.getMethod()));
             }
         } catch (Exception e) {
             log.error(e);
